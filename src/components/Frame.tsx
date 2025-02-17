@@ -235,7 +235,7 @@ export default function Frame() {
       }
       
       // Enhanced user data mapping with API response
-      setSearchResults(powerUsers.map((user) => ({
+      setSearchResults(powerUsers.map((user: any) => ({
         fid: user.fid,
         username: user.username,
         display_name: user.display_name,

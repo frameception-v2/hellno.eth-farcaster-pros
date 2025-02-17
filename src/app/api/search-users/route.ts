@@ -42,6 +42,17 @@ export async function GET(request: Request) {
 
     const data = await response.json();
     return NextResponse.json(data.result?.users || []);
+
+    if (!response.ok) {
+      const error = await response.json();
+      return NextResponse.json(
+        { error: error.message || "API request failed" },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data.result?.users || []);
     
   } catch (error) {
     console.error("Search error:", error);

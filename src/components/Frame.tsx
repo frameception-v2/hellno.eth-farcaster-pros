@@ -195,10 +195,15 @@ export default function Frame() {
         apiUrl = new URL(USER_BY_USERNAME_URL);
         apiUrl.searchParams.set('username', query.replace('@', ''));
       } else {
-        // Enhanced power users search with filters
-        apiUrl = new URL(POWER_USERS_URL);
+        // Use the search endpoint for power users
+        apiUrl = new URL(SEARCH_USERS_URL);
+        apiUrl.searchParams.set('q', query);
         apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
-        apiUrl.searchParams.set('viewer_fid', context?.user?.fid?.toString() || '');
+      }
+      
+      // Always add viewer context if available
+      if (context?.user?.fid) {
+        apiUrl.searchParams.set('viewer_fid', context.user.fid.toString());
       }
       
       // Add viewer context if available
@@ -233,7 +238,8 @@ export default function Frame() {
       } else if (query.includes('@')) {
         powerUsers = data.user ? [data.user] : [];
       } else {
-        powerUsers = data.users || [];
+        // Search endpoint returns results under result.users
+        powerUsers = data.result?.users || [];
       }
       
       // Enhanced user data mapping with API response
@@ -252,8 +258,16 @@ export default function Frame() {
           bio: user.profile?.bio?.text || '',
           location: user.profile?.location?.address?.country || 'Unknown'
         },
-        viewer_context: user.viewer_context || {},
-        relevant_followers: user.relevant_followers || []
+        viewer_context: user.viewer_context || {
+          following: false,
+          followed_by: false,
+          blocking: false,
+          blocked_by: false
+        },
+        relevant_followers: user.relevant_followers || [],
+        power_badge: user.power_badge || false,
+        verifications: user.verifications || [],
+        verified_accounts: user.verified_accounts || []
       })));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to search users');

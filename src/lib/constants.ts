@@ -49,6 +49,7 @@ export const EXAMPLE_PROFILES = [
 // Neynar API endpoints
 export const NEYNAR_BASE_URL = "https://api.neynar.com/v2/farcaster";
 export const POWER_USERS_URL = `${NEYNAR_BASE_URL}/user/power`;
+export const SEARCH_USERS_URL = `${NEYNAR_BASE_URL}/user/search`;
 export const BULK_USERS_URL = `${NEYNAR_BASE_URL}/user/bulk`;
 export const USER_BY_USERNAME_URL = `${NEYNAR_BASE_URL}/user/by_username`;
 export const RELEVANT_FOLLOWERS_URL = `${NEYNAR_BASE_URL}/followers/relevant`;

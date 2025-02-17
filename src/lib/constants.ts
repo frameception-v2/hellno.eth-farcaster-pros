@@ -8,6 +8,7 @@ export const EXAMPLE_PROFILES = [
   { fid: 1265, username: "akhil-bvs", displayName: "Akhil", address: "0xab14023979a34b4abb17abd099a1de1dc452011a" },
 ];
 
-// API endpoint for searching profiles
-const NEYNAR_API_URL = "https://api.neynar.com/v2/farcaster/user/search";
-const DEFAULT_LIMIT = 10;
+// Neynar API endpoints
+const NEYNAR_API_URL = "https://api.neynar.com/v2/farcaster/user/bulk";
+const POWER_BADGE_THRESHOLD = 10000; // Minimum followers to be considered power user
+const DEFAULT_LIMIT = 50;

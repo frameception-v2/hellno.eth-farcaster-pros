@@ -121,11 +121,41 @@ export default function Frame() {
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-      if (!response.ok) throw new Error('Failed to fetch results');
+      let searchParams: any = { limit: DEFAULT_LIMIT };
       
-      const data = await response.json();
-      setSearchResults(data.users);
+      // Handle fid: prefix search
+      if (query.startsWith('fid:')) {
+        const fid = parseInt(query.split(':')[1]);
+        if (!isNaN(fid)) {
+          searchParams.fids = [fid];
+        }
+      } else {
+        searchParams.usernames = [query.replace('@', '')];
+      }
+
+      const response = await fetch(NEYNAR_API_URL, {
+        headers: {
+          'Content-Type': 'application/json',
+          'api_key': process.env.NEXT_PUBLIC_NEYNAR_API_KEY || ''
+        }
+      });
+      
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error('API rate limit exceeded - try again later');
+        }
+        throw new Error(`API error: ${response.statusText}`);
+      }
+
+      const { users } = await response.json();
+      
+      // Filter for power users with badge and significant followers
+      const powerUsers = users.filter((user: any) => 
+        user.power_badge && 
+        user.follower_count >= POWER_BADGE_THRESHOLD
+      );
+      
+      setSearchResults(powerUsers);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to search users');
       setSearchResults([]);

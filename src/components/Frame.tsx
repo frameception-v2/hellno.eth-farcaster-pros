@@ -6,6 +6,7 @@ import sdk, {
   SignIn as SignInCore,
   type Context,
 } from "@farcaster/frame-sdk";
+import Image from "next/image";
 import {
   Card,
   CardHeader,
@@ -66,9 +67,11 @@ function SearchCard({
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <img 
-                      src={user.pfp_url} 
+                    <Image
+                      src={user.pfp_url}
                       alt={user.username}
+                      width={32}
+                      height={32}
                       className="w-8 h-8 rounded-full object-cover"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/default-avatar.png';
@@ -116,7 +119,7 @@ function SearchCard({
           ))}
           {!isLoading && !error && searchResults.length === 0 && (
             <div className="text-center py-4 text-gray-500">
-              No users found matching "{searchQuery}"
+              No users found matching &quot;{searchQuery}&quot;
             </div>
           )}
         </div>
@@ -217,7 +220,7 @@ export default function Frame() {
     } finally {
       setIsLoading(false);
     }
-  }, [context?.user?.fid]);
+  }, [context?.user?.fid, error]);
 
   const [added, setAdded] = useState(false);
 

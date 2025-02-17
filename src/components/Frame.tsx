@@ -38,7 +38,7 @@ function SearchCard({
 }: {
   searchQuery: string;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  searchResults: typeof EXAMPLE_PROFILES;
+  searchResults: typeof EXAMPLE_PROFILES| any[];
   isLoading: boolean;
   error: string | null;
 }) {
@@ -220,7 +220,7 @@ export default function Frame() {
     } finally {
       setIsLoading(false);
     }
-  }, [context?.user?.fid, error]);
+  }, [context?.user?.fid]);
 
   const [added, setAdded] = useState(false);
 

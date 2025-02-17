@@ -35,4 +35,3 @@ export const EXAMPLE_PROFILES = [
 export const NEYNAR_API_URL = "https://api.neynar.com/v2/farcaster/user/power";
 export const POWER_BADGE_THRESHOLD = 10000; // Minimum followers to be considered power user
 export const DEFAULT_LIMIT = 20;
-export const NEYNAR_CAST_URL = "https://warpcast.com/~/profiles";

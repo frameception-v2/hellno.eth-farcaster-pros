@@ -105,7 +105,7 @@ function SearchCard({
                 </div>
               </div>
               <a 
-                href={`${NEYNAR_CAST_URL}/${user.fid}`}
+                href={`https://warpcast.com/${user.username}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 text-xs text-purple-600 hover:underline"
@@ -206,6 +206,7 @@ export default function Frame() {
         username: user.username,
         display_name: user.display_name,
         address: user.custody_address,
+        pfp_url: user.pfp_url,
         power_badge: user.power_badge,
         follower_count: user.follower_count,
         verified_addresses: user.verified_addresses

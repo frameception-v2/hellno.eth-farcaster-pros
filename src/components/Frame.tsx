@@ -24,7 +24,9 @@ import { Label } from "~/components/ui/label";
 import { 
   PROJECT_TITLE, 
   EXAMPLE_PROFILES, 
-  NEYNAR_API_URL, 
+  BULK_USERS_URL,
+  USER_BY_USERNAME_URL,
+  POWER_USERS_URL,
   DEFAULT_LIMIT, 
   POWER_BADGE_THRESHOLD 
 } from "~/lib/constants";
@@ -210,7 +212,7 @@ export default function Frame() {
         fid: user.fid,
         username: user.username,
         display_name: user.display_name,
-        address: user.custody_address,
+        custody_address: user.custody_address,
         pfp_url: user.pfp_url,
         power_badge: user.power_badge,
         follower_count: user.follower_count,

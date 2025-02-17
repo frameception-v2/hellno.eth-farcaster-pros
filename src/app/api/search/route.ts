@@ -27,7 +27,7 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return NextResponse.json({ users: data.result.users });
+    return NextResponse.json({ users: data.users });
     
   } catch (error) {
     console.error('Search error:', error);

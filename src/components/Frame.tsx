@@ -25,11 +25,15 @@ import { PROJECT_TITLE, EXAMPLE_PROFILES } from "~/lib/constants";
 function SearchCard({ 
   searchQuery,
   handleSearch,
-  searchResults
+  searchResults,
+  isLoading,
+  error
 }: {
   searchQuery: string;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   searchResults: typeof EXAMPLE_PROFILES;
+  isLoading: boolean;
+  error: string | null;
 }) {
   return (
     <Card>
@@ -232,6 +236,8 @@ export default function Frame() {
           searchQuery={searchQuery}
           handleSearch={handleSearch}
           searchResults={searchResults}
+          isLoading={isLoading}
+          error={error}
         />
       </div>
     </div>

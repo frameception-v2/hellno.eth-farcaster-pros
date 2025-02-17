@@ -207,12 +207,20 @@ export default function Frame() {
         apiUrl.searchParams.set('viewer_fid', context.user.fid.toString());
       }
 
-      const response = await fetch(apiUrl.toString(), {
-        headers: {
-          'api_key': process.env.NEXT_PUBLIC_NEYNAR_API_KEY || '',
-          'accept': 'application/json'
-        }
-      });
+      const searchParams = new URLSearchParams();
+      if (query.startsWith('fid:')) {
+        searchParams.set('fids', query.slice(4));
+      } else if (query.includes('@')) {
+        searchParams.set('username', query.replace('@', ''));
+      } else {
+        searchParams.set('q', query);
+      }
+      searchParams.set('limit', DEFAULT_LIMIT.toString());
+      if (context?.user?.fid) {
+        searchParams.set('viewerFid', context.user.fid.toString());
+      }
+
+      const response = await fetch(`/api/search-users?${searchParams.toString()}`);
       
       if (!response.ok) {
         if (response.status === 429) {
@@ -221,21 +229,9 @@ export default function Frame() {
         throw new Error(`API error: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      
+      const powerUsers = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch users');
-      }
-
-      // Handle different response structures
-      let powerUsers: any[] = [];
-      if (query.startsWith('fid:')) {
-        powerUsers = data.users || [];
-      } else if (query.includes('@')) {
-        powerUsers = data.user ? [data.user] : [];
-      } else {
-        // Search endpoint returns results under result.users
-        powerUsers = data.result?.users || [];
+        throw new Error(powerUsers.error || 'Failed to fetch users');
       }
       
       // Enhanced user data mapping with API response

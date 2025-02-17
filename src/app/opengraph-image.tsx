@@ -72,7 +72,7 @@ export default async function Image() {
   
   // Use static gradient values
   const BACKGROUND_GRADIENT_STYLE = {
-    backgroundImage: "linear-gradient(to bottom, #c026d3, #ef4444)",
+    backgroundImage: "linear-gradient(to right, #6366f1, #8b5cf6)",
     color: "white",
   };
   /*
@@ -89,8 +89,8 @@ Please refer to Satori’s documentation for a list of supported HTML and CSS fe
         tw="h-full w-full flex flex-col justify-center items-center relative"
         style={BACKGROUND_GRADIENT_STYLE}
       >
-        <h1 tw="text-9xl text-center font-semibold">{PROJECT_TITLE}</h1>
-        <h3 tw="text-4xl font-normal">{PROJECT_DESCRIPTION}</h3>
+        <h1 tw="text-8xl text-center font-bold mb-8">{PROJECT_TITLE}</h1>
+        <h3 tw="text-3xl font-medium max-w-2xl text-center">{PROJECT_DESCRIPTION}</h3>
       </div>
     ),
     options

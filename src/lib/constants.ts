@@ -1,6 +1,6 @@
-export const PROJECT_ID = 'farcaster-frames-template';
-export const PROJECT_TITLE = "Farcaster Power Users";
-export const PROJECT_DESCRIPTION = "Search and discover top Farcaster profiles";
+export const PROJECT_ID = 'Farcaster Pros';
+export const PROJECT_TITLE = "Farcaster Pros";
+export const PROJECT_DESCRIPTION = "Discover and connect with top influencers and builders on the Farcaster network";
 export const EXAMPLE_PROFILES = [
   { 
     fid: 3, 

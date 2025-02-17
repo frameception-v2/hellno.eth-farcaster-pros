@@ -32,6 +32,10 @@ export const EXAMPLE_PROFILES = [
 ];
 
 // Neynar API endpoints
-export const NEYNAR_API_URL = "https://api.neynar.com/v2/farcaster/user/power";
-export const POWER_BADGE_THRESHOLD = 10000; // Minimum followers to be considered power user
+export const NEYNAR_BASE_URL = "https://api.neynar.com/v2/farcaster";
+export const POWER_USERS_URL = `${NEYNAR_BASE_URL}/user/power`;
+export const BULK_USERS_URL = `${NEYNAR_BASE_URL}/user/bulk`;
+export const USER_BY_USERNAME_URL = `${NEYNAR_BASE_URL}/user/by_username`;
+export const RELEVANT_FOLLOWERS_URL = `${NEYNAR_BASE_URL}/followers/relevant`;
+export const POWER_BADGE_THRESHOLD = 10000;
 export const DEFAULT_LIMIT = 20;

@@ -155,21 +155,29 @@ export default function Frame() {
         return;
       }
 
-      // Build search query for Neynar Power Users endpoint
-      const apiUrl = new URL(NEYNAR_API_URL);
-      apiUrl.searchParams.set('viewer_fid', context?.user?.fid?.toString() || '3');
-      apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
-      
-      // Add search filters if query exists
+      let apiUrl;
+      // Handle different search types
       if (query.startsWith('fid:')) {
-        apiUrl.searchParams.set('fid', query.slice(4));
-      } else if (query) {
+        // Search by FID using bulk endpoint
+        apiUrl = new URL(BULK_USERS_URL);
+        apiUrl.searchParams.set('fids', query.slice(4));
+      } else if (query.includes('@')) {
+        // Search by username
+        apiUrl = new URL(USER_BY_USERNAME_URL);
         apiUrl.searchParams.set('username', query.replace('@', ''));
+      } else {
+        // Default power users search
+        apiUrl = new URL(POWER_USERS_URL);
+        apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
       }
       
+      // Add viewer context if available
+      if (context?.user?.fid) {
+        apiUrl.searchParams.set('viewer_fid', context.user.fid.toString());
+      }
+
       const response = await fetch(apiUrl.toString(), {
         headers: {
-          'Content-Type': 'application/json',
           'api_key': process.env.NEXT_PUBLIC_NEYNAR_API_KEY || '',
           'accept': 'application/json'
         }
@@ -182,27 +190,21 @@ export default function Frame() {
         throw new Error(`API error: ${response.statusText}`);
       }
 
-      const data = await response.json() as {
-        users: Array<{
-          fid: number
-          username: string
-          display_name: string
-          custody_address: string
-          power_badge: boolean
-          follower_count: number
-          verified_addresses: {
-            eth_addresses: string[]
-          }
-          pfp_url: string
-        }>
-      };
+      const data = await response.json();
       
-      if (!response.ok || !data?.users) {
-        throw new Error('Failed to fetch users');
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch users');
       }
 
-      // Get the power users list directly from the API
-      const powerUsers = data.users;
+      // Handle different response structures
+      let powerUsers = [];
+      if (query.startsWith('fid:')) {
+        powerUsers = data.users || [];
+      } else if (query.includes('@')) {
+        powerUsers = data.user ? [data.user] : [];
+      } else {
+        powerUsers = data.users || [];
+      }
       
       setSearchResults(powerUsers.map((user) => ({
         fid: user.fid,

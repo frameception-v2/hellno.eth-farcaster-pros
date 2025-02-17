@@ -20,7 +20,13 @@ import { base, optimism } from "wagmi/chains";
 import { useSession } from "next-auth/react";
 import { createStore } from "mipd";
 import { Label } from "~/components/ui/label";
-import { PROJECT_TITLE, EXAMPLE_PROFILES } from "~/lib/constants";
+import { 
+  PROJECT_TITLE, 
+  EXAMPLE_PROFILES, 
+  NEYNAR_API_URL, 
+  DEFAULT_LIMIT, 
+  POWER_BADGE_THRESHOLD 
+} from "~/lib/constants";
 
 function SearchCard({ 
   searchQuery,

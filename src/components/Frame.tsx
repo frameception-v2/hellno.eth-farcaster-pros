@@ -57,32 +57,32 @@ function SearchCard({
         <input
           type="text"
           placeholder="Search @username or fid:123"
-          className="w-full p-2 border rounded-lg"
+          className="w-full max-w-md mx-auto p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           value={searchQuery}
           onChange={handleSearch}
         />
         
         {isLoading && <div className="text-center py-4">Searching...</div>}
         {error && <div className="text-red-500 text-center py-4">{error}</div>}
-        <div className="grid gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
           {searchResults.map((user) => (
-            <Card key={user.fid} className="p-3 hover:bg-gray-50 transition-colors">
+            <Card key={user.fid} className="p-2 md:p-3 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <Image
                       src={user.pfp_url}
                       alt={user.username}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 rounded-full object-cover"
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 md:w-8 md:h-8 rounded-full object-cover flex-shrink-0"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/default-avatar.png';
                       }}
                     />
                     <div>
-                      <h3 className="font-semibold">{user.display_name}</h3>
-                      <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-sm md:text-base truncate">{user.display_name}</h3>
+                      <div className="flex items-center gap-1 md:gap-2 flex-wrap">
                         {user.power_badge && (
                           <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
                             Power User
@@ -95,12 +95,12 @@ function SearchCard({
                     </div>
                   </div>
                   <div className="flex items-center gap-1 mt-1">
-                    <span className="text-sm text-gray-500">@{user.username}</span>
+                    <span className="text-xs md:text-sm text-gray-500 truncate">@{user.username}</span>
                     {user.verified_accounts?.some((a: { platform: string }) => a.platform === 'x') && (
                       <span className="text-blue-500">✓</span>
                     )}
                   </div>
-                  <div className="flex gap-2 mt-1">
+                  <div className="flex gap-1 md:gap-2 mt-1 flex-wrap">
                     <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
                       Followers: {user.follower_count?.toLocaleString() ?? 'N/A'}
                     </span>
@@ -109,7 +109,7 @@ function SearchCard({
                     </span>
                   </div>
                   {user.profile?.bio && (
-                    <p className="text-xs mt-2 text-gray-600">
+                    <p className="text-xs mt-2 text-gray-600 line-clamp-2">
                       {user.profile.bio}
                     </p>
                   )}
@@ -143,7 +143,7 @@ function SearchCard({
                 rel="noopener noreferrer"
                 className="mt-2 text-xs text-purple-600 hover:underline"
               >
-                View full profile on Warpcast →
+                View Profile →
               </a>
             </Card>
           ))}

@@ -178,22 +178,39 @@ export default function Frame() {
         throw new Error(`API error: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as {
+        casts: Array<{
+          author: {
+            fid: number
+            username: string
+            display_name: string
+            custody_address: string
+            power_badge: boolean
+            follower_count: number
+            verified_addresses: {
+              eth_addresses: string[]
+            }
+            pfp_url: string
+          }
+        }>
+      };
       
-      if (!response.ok || !data?.result?.users) {
-        throw new Error(data?.message || 'Failed to fetch users');
+      if (!response.ok || !data?.casts) {
+        throw new Error('Failed to fetch users');
       }
 
-      // Filter for power users with badge and significant followers
-      const powerUsers = data.result.users.filter((user: any) => 
-        user.power_badge && 
-        user.follower_count >= POWER_BADGE_THRESHOLD
-      );
+      // Extract authors from casts and filter power users
+      const powerUsers = data.casts
+        .map(cast => cast.author)
+        .filter(user => 
+          user.power_badge && 
+          user.follower_count >= POWER_BADGE_THRESHOLD
+        );
       
-      setSearchResults(powerUsers.map((user: any) => ({
+      setSearchResults(powerUsers.map((user) => ({
         fid: user.fid,
         username: user.username,
-        displayName: user.display_name,
+        display_name: user.display_name,
         address: user.custody_address,
         power_badge: user.power_badge,
         follower_count: user.follower_count,
@@ -205,7 +222,7 @@ export default function Frame() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [context?.user?.fid]);
 
   const [added, setAdded] = useState(false);
 

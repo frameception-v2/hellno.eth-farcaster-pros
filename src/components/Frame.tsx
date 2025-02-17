@@ -115,9 +115,9 @@ function SearchCard({
                   {user.relevant_followers?.length > 0 && (
                     <div className="mt-2 text-xs text-gray-600">
                       Followed by:{" "}
-                      {user.relevant_followers.slice(0, 3).map((follower, index) => (
-                        <span key={follower.fid}>
-                          @{follower.username}
+                      {(user.relevant_followers || []).slice(0, 3).map((follower: any, index: number) => (
+                        <span key={follower?.fid}>
+                          @{follower?.username}
                           {index < user.relevant_followers.slice(0, 3).length - 1 ? ", " : ""}
                         </span>
                       ))}
@@ -227,7 +227,7 @@ export default function Frame() {
       }
 
       // Handle different response structures
-      let powerUsers = [];
+      let powerUsers: any[] = [];
       if (query.startsWith('fid:')) {
         powerUsers = data.users || [];
       } else if (query.includes('@')) {

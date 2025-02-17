@@ -13,7 +13,8 @@ export const EXAMPLE_PROFILES = [
     },
     pfp_url: "https://i.imgur.com/5VDCQ9Z.png",
     power_badge: true,
-    follower_count: 500000
+    follower_count: 500000,
+    relevant_followers: []
   },
   { 
     fid: 5650, 
@@ -26,7 +27,8 @@ export const EXAMPLE_PROFILES = [
     },
     pfp_url: "https://i.imgur.com/MJ3A7qG.png",
     power_badge: true,
-    follower_count: 300000
+    follower_count: 300000,
+    relevant_followers: []
   },
   { 
     fid: 602, 
@@ -39,7 +41,8 @@ export const EXAMPLE_PROFILES = [
     },
     pfp_url: "https://i.imgur.com/3Zt7T7H.png",
     power_badge: true,
-    follower_count: 150000
+    follower_count: 150000,
+    relevant_followers: []
   },
 ];
 

@@ -7,7 +7,10 @@ export const EXAMPLE_PROFILES = [
     username: "dwr.eth", 
     display_name: "Dan Romero", 
     custody_address: "0x6b0bda3f2ffed5efc83fa8c024acff1dd45793f1",
-    verified_addresses: { eth_addresses: ["0x6b0bda3f2ffed5efc83fa8c024acff1dd45793f1"] },
+    verified_addresses: { 
+      eth_addresses: ["0x6b0bda3f2ffed5efc83fa8c024acff1dd45793f1"],
+      sol_addresses: [] 
+    },
     pfp_url: "https://i.imgur.com/5VDCQ9Z.png",
     power_badge: true,
     follower_count: 500000
@@ -17,7 +20,10 @@ export const EXAMPLE_PROFILES = [
     username: "v", 
     display_name: "Vitalik", 
     custody_address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-    verified_addresses: { eth_addresses: ["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"] },
+    verified_addresses: { 
+      eth_addresses: ["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"],
+      sol_addresses: [] 
+    },
     pfp_url: "https://i.imgur.com/MJ3A7qG.png",
     power_badge: true,
     follower_count: 300000
@@ -26,8 +32,11 @@ export const EXAMPLE_PROFILES = [
     fid: 602, 
     username: "jessepollak", 
     display_name: "Jesse Pollak", 
-    custody_address: "0x8270F7E08a3a2f6AEdE6b0e5D24513Cb582FFe93", 
-    verified_addresses: { eth_addresses: ["0x8270F7E08a3a2f6AEdE6b0e5D24513Cb582FFe93"] },
+    custody_address: "0x8270F7E08a3a2f6AEdE6b0e5D24513Cb582FFe93",
+    verified_addresses: { 
+      eth_addresses: ["0x8270F7E08a3a2f6AEdE6b0e5D24513Cb582FFe93"],
+      sol_addresses: [] 
+    },
     pfp_url: "https://i.imgur.com/3Zt7T7H.png",
     power_badge: true,
     follower_count: 150000

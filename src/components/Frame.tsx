@@ -152,16 +152,17 @@ export default function Frame() {
         return;
       }
 
-      // Build search query for Neynar API with power user filters
+      // Build search query for Neynar Power Users endpoint
       const apiUrl = new URL(NEYNAR_API_URL);
-      apiUrl.searchParams.set('feed_type', 'filter');
-      apiUrl.searchParams.set('filter_type', 'fids');
-      apiUrl.searchParams.set('fids', query);
       apiUrl.searchParams.set('viewer_fid', context?.user?.fid?.toString() || '3');
       apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
-      apiUrl.searchParams.set('with_recasts', 'false');
-      apiUrl.searchParams.set('power_badge', 'true');
-      apiUrl.searchParams.set('min_followers', POWER_BADGE_THRESHOLD.toString());
+      
+      // Add search filters if query exists
+      if (query.startsWith('fid:')) {
+        apiUrl.searchParams.set('fid', query.slice(4));
+      } else if (query) {
+        apiUrl.searchParams.set('username', query.replace('@', ''));
+      }
       
       const response = await fetch(apiUrl.toString(), {
         headers: {
@@ -179,33 +180,26 @@ export default function Frame() {
       }
 
       const data = await response.json() as {
-        casts: Array<{
-          author: {
-            fid: number
-            username: string
-            display_name: string
-            custody_address: string
-            power_badge: boolean
-            follower_count: number
-            verified_addresses: {
-              eth_addresses: string[]
-            }
-            pfp_url: string
+        users: Array<{
+          fid: number
+          username: string
+          display_name: string
+          custody_address: string
+          power_badge: boolean
+          follower_count: number
+          verified_addresses: {
+            eth_addresses: string[]
           }
+          pfp_url: string
         }>
       };
       
-      if (!response.ok || !data?.casts) {
+      if (!response.ok || !data?.users) {
         throw new Error('Failed to fetch users');
       }
 
-      // Extract authors from casts and filter power users
-      const powerUsers = data.casts
-        .map(cast => cast.author)
-        .filter(user => 
-          user.power_badge && 
-          user.follower_count >= POWER_BADGE_THRESHOLD
-        );
+      // Get the power users list directly from the API
+      const powerUsers = data.users;
       
       setSearchResults(powerUsers.map((user) => ({
         fid: user.fid,

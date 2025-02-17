@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
   try {
     // Build Neynar API URL based on query type
-    let apiUrl = new URL("https://api.neynar.com/v2/farcaster/user/search");
+    const apiUrl = new URL("https://api.neynar.com/v2/farcaster/user/search");
     apiUrl.searchParams.set("q", query);
     apiUrl.searchParams.set("limit", limit);
     

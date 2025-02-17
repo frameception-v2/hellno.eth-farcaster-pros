@@ -48,23 +48,47 @@ function SearchCard({
           onChange={handleSearch}
         />
         
+        {isLoading && <div className="text-center py-4">Searching...</div>}
+        {error && <div className="text-red-500 text-center py-4">{error}</div>}
         <div className="grid gap-3">
           {searchResults.map((user) => (
-            <Card key={user.fid} className="p-3">
+            <Card key={user.fid} className="p-3 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold">{user.displayName}</h3>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold">{user.displayName}</h3>
+                    {user.power_badge && (
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                        Power User
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-500">@{user.username}</p>
+                  <p className="text-xs mt-1">
+                    Followers: {user.follower_count?.toLocaleString() ?? 'N/A'}
+                  </p>
                 </div>
-                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                  FID: {user.fid}
-                </span>
+                <div className="text-right">
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded block mb-1">
+                    FID: {user.fid}
+                  </span>
+                  {user.verified_addresses?.eth_addresses?.length > 0 && (
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded block">
+                      Verified
+                    </span>
+                  )}
+                </div>
               </div>
-              <p className="mt-2 text-xs font-mono text-gray-600">
+              <p className="mt-2 text-xs font-mono text-gray-600 break-all">
                 {truncateAddress(user.address)}
               </p>
             </Card>
           ))}
+          {!isLoading && !error && searchResults.length === 0 && (
+            <div className="text-center py-4 text-gray-500">
+              No users found matching "{searchQuery}"
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -77,17 +101,33 @@ export default function Frame() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(EXAMPLE_PROFILES);
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value.toLowerCase();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSearch = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.trim();
     setSearchQuery(query);
     
-    const results = EXAMPLE_PROFILES.filter(user =>
-      user.username.toLowerCase().includes(query) ||
-      user.displayName.toLowerCase().includes(query) ||
-      user.fid.toString().includes(query)
-    );
-    
-    setSearchResults(results);
+    if (!query) {
+      setSearchResults(EXAMPLE_PROFILES);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      if (!response.ok) throw new Error('Failed to fetch results');
+      
+      const data = await response.json();
+      setSearchResults(data.users);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to search users');
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const [added, setAdded] = useState(false);

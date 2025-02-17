@@ -7,3 +7,7 @@ export const EXAMPLE_PROFILES = [
   { fid: 602, username: "jessepollak", displayName: "Jesse Pollak", address: "0x8270F7E08a3a2f6AEdE6b0e5D24513Cb582FFe93" },
   { fid: 1265, username: "akhil-bvs", displayName: "Akhil", address: "0xab14023979a34b4abb17abd099a1de1dc452011a" },
 ];
+
+// API endpoint for searching profiles
+const NEYNAR_API_URL = "https://api.neynar.com/v2/farcaster/user/search";
+const DEFAULT_LIMIT = 10;

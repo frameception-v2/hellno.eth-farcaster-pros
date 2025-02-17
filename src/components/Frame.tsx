@@ -95,7 +95,7 @@ function SearchCard({
                   </div>
                   <div className="flex items-center gap-1 mt-1">
                     <span className="text-sm text-gray-500">@{user.username}</span>
-                    {user.verified_accounts?.some(a => a.platform === 'x') && (
+                    {user.verified_accounts?.some((a: { platform: string }) => a.platform === 'x') && (
                       <span className="text-blue-500">✓</span>
                     )}
                   </div>

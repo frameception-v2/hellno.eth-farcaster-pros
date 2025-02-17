@@ -133,7 +133,10 @@ export default function Frame() {
         searchParams.usernames = [query.replace('@', '')];
       }
 
-      const response = await fetch(NEYNAR_API_URL, {
+      const apiUrl = new URL(NEYNAR_API_URL);
+      apiUrl.search = new URLSearchParams(searchParams).toString();
+      
+      const response = await fetch(apiUrl.toString(), {
         headers: {
           'Content-Type': 'application/json',
           'api_key': process.env.NEXT_PUBLIC_NEYNAR_API_KEY || ''
@@ -157,7 +160,7 @@ export default function Frame() {
       
       setSearchResults(powerUsers);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to search users');
+      setError(error instanceof Error ? error.message : 'Failed to search users');
       setSearchResults([]);
     } finally {
       setIsLoading(false);

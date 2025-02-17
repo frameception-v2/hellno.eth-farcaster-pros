@@ -6,35 +6,20 @@ import { join } from "path";
 export const alt = PROJECT_TITLE;
 export const contentType = "image/png";
 
-// Debug logging function
-function debugLog(message: string, ...args: any[]) {
-  console.log(`[OG Image Debug] ${message}`, ...args);
-}
-
 // Function to load font with error handling
 async function loadFont(fontPath: string): Promise<Buffer> {
   try {
-    debugLog(`Attempting to load font from: ${fontPath}`);
-    debugLog(`Current working directory: ${process.cwd()}`);
-
     // Try to load font synchronously
-    const fontData = readFileSync(fontPath);
-    debugLog(`Successfully loaded font: ${fontPath}`);
-    return fontData;
+    return readFileSync(fontPath);
   } catch (error) {
-    debugLog(`Error loading font ${fontPath}:`, error);
-
-    // Fallback to loading from absolute path
+    // Fallback to loading from public directory
     try {
       const absolutePath = join(
-        __dirname,
-        "..",
-        "..",
+        process.cwd(),
         "public",
-        "fonts",
+        "fonts", 
         fontPath.split("/").pop()!
       );
-      debugLog(`Trying absolute path: ${absolutePath}`);
       return readFileSync(absolutePath);
     } catch (fallbackError) {
       debugLog(`Fallback also failed:`, fallbackError);
@@ -91,15 +76,12 @@ export default async function Image() {
   debugLog("Starting OG image generation");
 
   const options = await initializeFonts();
-
-  const BACKGROUND_GRADIENT_START = "#c026d3";
-  const BACKGROUND_GRADIENT_END = "#ef4444";
+  
+  // Use static gradient values
   const BACKGROUND_GRADIENT_STYLE = {
-    backgroundImage: `linear-gradient(to bottom, ${BACKGROUND_GRADIENT_START}, ${BACKGROUND_GRADIENT_END})`,
+    backgroundImage: "linear-gradient(to bottom, #c026d3, #ef4444)",
     color: "white",
   };
-
-  debugLog("Generating image response");
   /*
 this Image is rendered using vercel/satori.
 

@@ -66,12 +66,27 @@ function SearchCard({
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{user.displayName}</h3>
-                    {user.power_badge && (
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                        Power User
-                      </span>
-                    )}
+                    <img 
+                      src={user.pfp_url} 
+                      alt={user.username}
+                      className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/default-avatar.png';
+                      }}
+                    />
+                    <div>
+                      <h3 className="font-semibold">{user.display_name}</h3>
+                      <div className="flex items-center gap-2">
+                        {user.power_badge && (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                            Power User
+                          </span>
+                        )}
+                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                          {user.follower_count?.toLocaleString() ?? 'N/A'} followers
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   <p className="text-sm text-gray-500">@{user.username}</p>
                   <p className="text-xs mt-1">
@@ -89,9 +104,14 @@ function SearchCard({
                   )}
                 </div>
               </div>
-              <p className="mt-2 text-xs font-mono text-gray-600 break-all">
-                {truncateAddress(user.address)}
-              </p>
+              <a 
+                href={`${NEYNAR_CAST_URL}/${user.fid}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 text-xs text-purple-600 hover:underline"
+              >
+                View full profile on Warpcast →
+              </a>
             </Card>
           ))}
           {!isLoading && !error && searchResults.length === 0 && (
@@ -132,11 +152,16 @@ export default function Frame() {
         return;
       }
 
-      // Build search query for Neynar API
+      // Build search query for Neynar API with power user filters
       const apiUrl = new URL(NEYNAR_API_URL);
-      apiUrl.searchParams.set('q', query);
+      apiUrl.searchParams.set('feed_type', 'filter');
+      apiUrl.searchParams.set('filter_type', 'fids');
+      apiUrl.searchParams.set('fids', query);
+      apiUrl.searchParams.set('viewer_fid', context?.user?.fid?.toString() || '3');
       apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
-      apiUrl.searchParams.set('viewer_fid', context?.user?.fid?.toString() || '3'); // Default to Dan's fid if no context
+      apiUrl.searchParams.set('with_recasts', 'false');
+      apiUrl.searchParams.set('power_badge', 'true');
+      apiUrl.searchParams.set('min_followers', POWER_BADGE_THRESHOLD.toString());
       
       const response = await fetch(apiUrl.toString(), {
         headers: {
@@ -175,7 +200,7 @@ export default function Frame() {
         verified_addresses: user.verified_addresses
       })));
     } catch (err) {
-      setError(error instanceof Error ? error.message : 'Failed to search users');
+      setError(err instanceof Error ? err.message : 'Failed to search users');
       setSearchResults([]);
     } finally {
       setIsLoading(false);

@@ -201,11 +201,6 @@ export default function Frame() {
         apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
       }
       
-      // Always add viewer context if available
-      if (context?.user?.fid) {
-        apiUrl.searchParams.set('viewer_fid', context.user.fid.toString());
-      }
-      
       // Add viewer context if available
       if (context?.user?.fid) {
         apiUrl.searchParams.set('viewer_fid', context.user.fid.toString());
@@ -265,8 +260,6 @@ export default function Frame() {
           blocked_by: false
         },
         relevant_followers: user.relevant_followers || [],
-        power_badge: user.power_badge || false,
-        verifications: user.verifications || [],
         verified_accounts: user.verified_accounts || []
       })));
     } catch (err) {

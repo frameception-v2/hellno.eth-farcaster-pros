@@ -22,17 +22,50 @@ import { createStore } from "mipd";
 import { Label } from "~/components/ui/label";
 import { PROJECT_TITLE } from "~/lib/constants";
 
-function ExampleCard() {
+function SearchCard({ 
+  searchQuery,
+  handleSearch,
+  searchResults
+}: {
+  searchQuery: string;
+  handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  searchResults: typeof EXAMPLE_PROFILES;
+}) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Welcome to the Frame Template</CardTitle>
+        <CardTitle>Search Power Users</CardTitle>
         <CardDescription>
-          This is an example card that you can customize or remove
+          Find top Farcaster profiles by username or FID
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <Label>Place content in a Card here.</Label>
+      <CardContent className="space-y-4">
+        <input
+          type="text"
+          placeholder="Search @username or fid:123"
+          className="w-full p-2 border rounded-lg"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+        
+        <div className="grid gap-3">
+          {searchResults.map((user) => (
+            <Card key={user.fid} className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">{user.displayName}</h3>
+                  <p className="text-sm text-gray-500">@{user.username}</p>
+                </div>
+                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                  FID: {user.fid}
+                </span>
+              </div>
+              <p className="mt-2 text-xs font-mono text-gray-600">
+                {truncateAddress(user.address)}
+              </p>
+            </Card>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );
@@ -41,6 +74,21 @@ function ExampleCard() {
 export default function Frame() {
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);
   const [context, setContext] = useState<Context.FrameContext>();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState(EXAMPLE_PROFILES);
+
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    
+    const results = EXAMPLE_PROFILES.filter(user =>
+      user.username.toLowerCase().includes(query) ||
+      user.displayName.toLowerCase().includes(query) ||
+      user.fid.toString().includes(query)
+    );
+    
+    setSearchResults(results);
+  }, []);
 
   const [added, setAdded] = useState(false);
 
@@ -140,7 +188,11 @@ export default function Frame() {
         <h1 className="text-2xl font-bold text-center mb-4 text-gray-700 dark:text-gray-300">
           {PROJECT_TITLE}
         </h1>
-        <ExampleCard />
+        <SearchCard 
+          searchQuery={searchQuery}
+          handleSearch={handleSearch}
+          searchResults={searchResults}
+        />
       </div>
     </div>
   );

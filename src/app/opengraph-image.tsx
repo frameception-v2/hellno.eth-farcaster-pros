@@ -22,7 +22,6 @@ async function loadFont(fontPath: string): Promise<Buffer> {
       );
       return readFileSync(absolutePath);
     } catch (fallbackError) {
-      debugLog(`Fallback also failed:`, fallbackError);
       throw new Error(`Failed to load font ${fontPath}: ${error}`);
     }
   }
@@ -34,8 +33,6 @@ let imageOptions: any = null;
 // Initialize fonts
 async function initializeFonts() {
   if (imageOptions) return imageOptions;
-
-  debugLog("Initializing fonts...");
 
   try {
     const regularFont = await loadFont(
@@ -64,17 +61,13 @@ async function initializeFonts() {
       ],
     };
 
-    debugLog("Fonts initialized successfully");
     return imageOptions;
   } catch (error) {
-    debugLog("Font initialization failed:", error);
     throw error;
   }
 }
 
 export default async function Image() {
-  debugLog("Starting OG image generation");
-
   const options = await initializeFonts();
   
   // Use static gradient values

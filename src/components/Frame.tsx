@@ -93,10 +93,37 @@ function SearchCard({
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500">@{user.username}</p>
-                  <p className="text-xs mt-1">
-                    Followers: {user.follower_count?.toLocaleString() ?? 'N/A'}
-                  </p>
+                  <div className="flex items-center gap-1 mt-1">
+                    <span className="text-sm text-gray-500">@{user.username}</span>
+                    {user.verified_accounts?.some(a => a.platform === 'x') && (
+                      <span className="text-blue-500">✓</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2 mt-1">
+                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                      Followers: {user.follower_count?.toLocaleString() ?? 'N/A'}
+                    </span>
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                      Following: {user.following_count?.toLocaleString() ?? 'N/A'}
+                    </span>
+                  </div>
+                  {user.profile?.bio && (
+                    <p className="text-xs mt-2 text-gray-600">
+                      {user.profile.bio}
+                    </p>
+                  )}
+                  {user.relevant_followers?.length > 0 && (
+                    <div className="mt-2 text-xs text-gray-600">
+                      Followed by:{" "}
+                      {user.relevant_followers.slice(0, 3).map((follower, index) => (
+                        <span key={follower.fid}>
+                          @{follower.username}
+                          {index < user.relevant_followers.slice(0, 3).length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                      {user.relevant_followers.length > 3 && " and others"}
+                    </div>
+                  )}
                 </div>
                 <div className="text-right">
                   <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded block mb-1">
@@ -168,9 +195,10 @@ export default function Frame() {
         apiUrl = new URL(USER_BY_USERNAME_URL);
         apiUrl.searchParams.set('username', query.replace('@', ''));
       } else {
-        // Default power users search
+        // Enhanced power users search with filters
         apiUrl = new URL(POWER_USERS_URL);
         apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
+        apiUrl.searchParams.set('viewer_fid', context?.user?.fid?.toString() || '');
       }
       
       // Add viewer context if available
@@ -208,6 +236,7 @@ export default function Frame() {
         powerUsers = data.users || [];
       }
       
+      // Enhanced user data mapping with API response
       setSearchResults(powerUsers.map((user) => ({
         fid: user.fid,
         username: user.username,
@@ -216,7 +245,15 @@ export default function Frame() {
         pfp_url: user.pfp_url,
         power_badge: user.power_badge,
         follower_count: user.follower_count,
-        verified_addresses: user.verified_addresses
+        following_count: user.following_count,
+        verified_addresses: user.verified_addresses,
+        verifications: user.verifications,
+        profile: {
+          bio: user.profile?.bio?.text || '',
+          location: user.profile?.location?.address?.country || 'Unknown'
+        },
+        viewer_context: user.viewer_context || {},
+        relevant_followers: user.relevant_followers || []
       })));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to search users');

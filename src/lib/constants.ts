@@ -49,5 +49,6 @@ export const POWER_USERS_URL = `${NEYNAR_BASE_URL}/user/power`;
 export const BULK_USERS_URL = `${NEYNAR_BASE_URL}/user/bulk`;
 export const USER_BY_USERNAME_URL = `${NEYNAR_BASE_URL}/user/by_username`;
 export const RELEVANT_FOLLOWERS_URL = `${NEYNAR_BASE_URL}/followers/relevant`;
+export const POWER_USERS_LITE_URL = `${NEYNAR_BASE_URL}/user/power_lite`;
 export const POWER_BADGE_THRESHOLD = 10000;
 export const DEFAULT_LIMIT = 20;

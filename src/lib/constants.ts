@@ -9,6 +9,6 @@ export const EXAMPLE_PROFILES = [
 ];
 
 // Neynar API endpoints
-export const NEYNAR_API_URL = "https://api.neynar.com/v2/farcaster/user/bulk";
+export const NEYNAR_API_URL = "https://api.neynar.com/v2/farcaster/user/search";
 export const POWER_BADGE_THRESHOLD = 10000; // Minimum followers to be considered power user
 export const DEFAULT_LIMIT = 50;

@@ -121,25 +121,22 @@ export default function Frame() {
       setIsLoading(true);
       setError(null);
       
-      let searchParams: any = { limit: DEFAULT_LIMIT };
-      
-      // Handle fid: prefix search
-      if (query.startsWith('fid:')) {
-        const fid = parseInt(query.split(':')[1]);
-        if (!isNaN(fid)) {
-          searchParams.fids = [fid];
-        }
-      } else {
-        searchParams.usernames = [query.replace('@', '')];
+      if (!query) {
+        setSearchResults(EXAMPLE_PROFILES);
+        return;
       }
 
+      // Build search query for Neynar API
       const apiUrl = new URL(NEYNAR_API_URL);
-      apiUrl.search = new URLSearchParams(searchParams).toString();
+      apiUrl.searchParams.set('q', query);
+      apiUrl.searchParams.set('limit', DEFAULT_LIMIT.toString());
+      apiUrl.searchParams.set('viewer_fid', context?.user?.fid?.toString() || '3'); // Default to Dan's fid if no context
       
       const response = await fetch(apiUrl.toString(), {
         headers: {
           'Content-Type': 'application/json',
-          'api_key': process.env.NEXT_PUBLIC_NEYNAR_API_KEY || ''
+          'api_key': process.env.NEXT_PUBLIC_NEYNAR_API_KEY || '',
+          'accept': 'application/json'
         }
       });
       
@@ -150,15 +147,27 @@ export default function Frame() {
         throw new Error(`API error: ${response.statusText}`);
       }
 
-      const { users } = await response.json();
+      const data = await response.json();
       
+      if (!response.ok || !data?.result?.users) {
+        throw new Error(data?.message || 'Failed to fetch users');
+      }
+
       // Filter for power users with badge and significant followers
-      const powerUsers = users.filter((user: any) => 
+      const powerUsers = data.result.users.filter((user: any) => 
         user.power_badge && 
         user.follower_count >= POWER_BADGE_THRESHOLD
       );
       
-      setSearchResults(powerUsers);
+      setSearchResults(powerUsers.map((user: any) => ({
+        fid: user.fid,
+        username: user.username,
+        displayName: user.display_name,
+        address: user.custody_address,
+        power_badge: user.power_badge,
+        follower_count: user.follower_count,
+        verified_addresses: user.verified_addresses
+      })));
     } catch (err) {
       setError(error instanceof Error ? error.message : 'Failed to search users');
       setSearchResults([]);

@@ -1,4 +1,4 @@
-import { ImageResponse } from "next/server";
+import { ImageResponse } from "next/og";
 import { PROJECT_TITLE, PROJECT_DESCRIPTION } from "~/lib/constants";
 import { readFileSync } from "fs";
 import { join } from "path";

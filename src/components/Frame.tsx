@@ -57,32 +57,32 @@ function SearchCard({
         <input
           type="text"
           placeholder="Search @username or fid:123"
-          className="w-full max-w-md mx-auto p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          className="w-full mx-auto p-2 text-sm md:text-base border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           value={searchQuery}
           onChange={handleSearch}
         />
         
         {isLoading && <div className="text-center py-4">Searching...</div>}
         {error && <div className="text-red-500 text-center py-4">{error}</div>}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {searchResults.map((user) => (
-            <Card key={user.fid} className="p-2 md:p-3 hover:bg-gray-50 transition-colors">
+            <Card key={user.fid} className="p-3 md:p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <Image
                       src={user.pfp_url}
                       alt={user.username}
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 md:w-8 md:h-8 rounded-full object-cover flex-shrink-0"
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover flex-shrink-0"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/default-avatar.png';
                       }}
                     />
                     <div>
-                      <h3 className="font-semibold text-sm md:text-base truncate">{user.display_name}</h3>
-                      <div className="flex items-center gap-1 md:gap-2 flex-wrap">
+                      <h3 className="font-semibold text-sm truncate">{user.display_name}</h3>
+                      <div className="flex items-center gap-1 flex-wrap">
                         {user.power_badge && (
                           <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
                             Power User
@@ -100,8 +100,8 @@ function SearchCard({
                       <span className="text-blue-500">✓</span>
                     )}
                   </div>
-                  <div className="flex gap-1 md:gap-2 mt-1 flex-wrap">
-                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                  <div className="flex gap-1 mt-1 flex-wrap">
+                    <span className="text-xs bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded">
                       Followers: {user.follower_count?.toLocaleString() ?? 'N/A'}
                     </span>
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
@@ -109,7 +109,7 @@ function SearchCard({
                     </span>
                   </div>
                   {user.profile?.bio && (
-                    <p className="text-xs mt-2 text-gray-600 line-clamp-2">
+                    <p className="text-xs mt-1 text-gray-600 line-clamp-2 md:line-clamp-3">
                       {user.profile.bio}
                     </p>
                   )}
@@ -365,8 +365,13 @@ export default function Frame() {
         paddingRight: context?.client.safeAreaInsets?.right ?? 0,
       }}
     >
-      <div className="w-[300px] mx-auto py-2 px-2">
-        <h1 className="text-2xl font-bold text-center mb-4 text-gray-700 dark:text-gray-300">
+      <div 
+        className="w-full max-w-[100vw] px-4 mx-auto py-2"
+        style={{
+          minHeight: `calc(100vh - ${(context?.client.safeAreaInsets?.top || 0) + (context?.client.safeAreaInsets?.bottom || 0)}px)`
+        }}
+      >
+        <h1 className="text-xl md:text-2xl font-bold text-center mb-3 text-gray-700 dark:text-gray-300">
           {PROJECT_TITLE}
         </h1>
         <SearchCard 
